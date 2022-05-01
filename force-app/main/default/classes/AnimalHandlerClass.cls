@@ -28,13 +28,14 @@ global class AnimalHandlerClass {
     public static AnimalParsing sendRequest(Decimal id) {
         Http http = new Http();
         HttpRequest request = new HttpRequest();
-        request.setEndpoint(URL + '/' + String.valueOf(id));
+        request.setEndpoint(URL + '/' + String.valueOf(Integer.valueOf(id)));
         request.setMethod('GET');
         HttpResponse response = http.send(request);
         // If the request is successful, parse the JSON response.
           if(response.getStatusCode() == 200) {
         // Deserialize the JSON string into collections of primitive data types.
           AnimalParsing test = AnimalParsing.parse(response.getBody());
+          System.debug(response.getBody());
           System.debug(test.Animal);
           return test;
         }
