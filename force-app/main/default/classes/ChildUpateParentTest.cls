@@ -3,14 +3,14 @@ public with sharing class ChildUpateParentTest {
 
    @TestSetup
    static void makeData(){
-       PrepareData.makeParentByName('lupa');
-       PrepareData.makeParentByName('pupa');
-       PrepareData.makeChildByNameWithLookup('lupaCh1','lupa');
-       PrepareData.makeChildByNameWithLookup('lupaCh2','lupa');
-       PrepareData.makeChildByNameWithLookup('pupaCh1','pupa');
-       PrepareData.makeChildByNameWithLookup('pupaCh2','pupa');
-       PrepareData.makeChildByNameWithoutLookup('Orphan child1');
-       PrepareData.makeChildByNameWithoutLookup('Orphan child2');
+    PrepareDataForChildUpdateTest.makeParentByName('lupa');
+    PrepareDataForChildUpdateTest.makeParentByName('pupa');
+    PrepareDataForChildUpdateTest.makeChildByNameWithLookup('lupaCh1','lupa');
+    PrepareDataForChildUpdateTest.makeChildByNameWithLookup('lupaCh2','lupa');
+    PrepareDataForChildUpdateTest.makeChildByNameWithLookup('pupaCh1','pupa');
+    PrepareDataForChildUpdateTest.makeChildByNameWithLookup('pupaCh2','pupa');
+    PrepareDataForChildUpdateTest.makeChildByNameWithoutLookup('Orphan child1');
+    PrepareDataForChildUpdateTest.makeChildByNameWithoutLookup('Orphan child2');
    }
 
    @isTest static void assertNotEqualForCompleteChangeDateByCheckingVersionsOfParent() {
@@ -60,8 +60,8 @@ public with sharing class ChildUpateParentTest {
    @isTest static void checkNumberOfChildInParentWhenChildIsChangingHisParent(){
         Child__c firstChildOfFirstParent = [SELECT ID, Parent_Lookup__c FROM Child__c WHERE Name = 'lupaCh1'];
         Child__c secondChildOfFirstParent = [SELECT ID, Parent_Lookup__c FROM Child__c WHERE Name = 'lupaCh2'];
-        firstChildOfFirstParent.Parent_Lookup__c = PrepareData.getIdOfParentByName('pupa');
-        secondChildOfFirstParent.Parent_Lookup__c = PrepareData.getIdOfParentByName('pupa');
+        firstChildOfFirstParent.Parent_Lookup__c = PrepareDataForChildUpdateTest.getIdOfParentByName('pupa');
+        secondChildOfFirstParent.Parent_Lookup__c = PrepareDataForChildUpdateTest.getIdOfParentByName('pupa');
         update firstChildOfFirstParent;
         update secondChildOfFirstParent;
         Parent__c firstParent = [SELECT Id,Number_Of_Child__c FROM Parent__c WHERE Name = 'lupa'];
@@ -74,8 +74,8 @@ public with sharing class ChildUpateParentTest {
    @isTest static void giveParentToOrphanChildAndMakeHimOrphanAgain() {
         Child__c firstOrphanChild = [SELECT ID, Parent_Lookup__c FROM Child__c WHERE Name = 'Orphan child1'];
         Child__c secondOrphanChild = [SELECT ID, Parent_Lookup__c FROM Child__c WHERE Name = 'Orphan child2'];
-        firstOrphanChild.Parent_Lookup__c = PrepareData.getIdOfParentByName('lupa');
-        secondOrphanChild.Parent_Lookup__c = PrepareData.getIdOfParentByName('lupa');
+        firstOrphanChild.Parent_Lookup__c = PrepareDataForChildUpdateTest.getIdOfParentByName('lupa');
+        secondOrphanChild.Parent_Lookup__c = PrepareDataForChildUpdateTest.getIdOfParentByName('lupa');
         update firstOrphanChild;
         update secondOrphanChild;
         Parent__c firstParent = [SELECT Id,Number_Of_Child__c FROM Parent__c WHERE Name = 'lupa'];

@@ -54,6 +54,7 @@ public class ChildUpdateParent {
 		Integer iterator = 0;
 		for(Parent__c parentByUpdatedChild : parentsByUpdatedChild){
         		parentUpdated.add(updateParentNumberOfChildAndDate(parentByUpdatedChild, numberOfChildInParents[iterator]));
+				iterator++;
     		}
 		return parentUpdated;
 	}
@@ -66,6 +67,7 @@ public class ChildUpdateParent {
 		for(Parent__c parentByUpdatedChild : parentsByUpdatedChild)
 			{
         		parentUpdated.add(updateParentNumberOfChildAndDate(parentByUpdatedChild, numberOfChildInParents[iterator]));
+				iterator++;
     		}
 		return parentUpdated;
 	}
