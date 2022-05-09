@@ -1,5 +1,5 @@
 global class AnimalHandlerClass {
-    private static String URL = 'https://th-apex-http-callout.herokuapp.com/animals';
+    private static String URL = 'https://th-apex-http-callout.herokuapp.com/animals/';
 
 
     public static void getListOfAnimalsAndStartUpdateAnimalByRequest(List<Animal__c> animals) {
@@ -31,23 +31,8 @@ global class AnimalHandlerClass {
     public static Map<Decimal,AnimalParsing> getListOfAnimalsBySendingRequest(List<Decimal> ids) {
       Map<Decimal,AnimalParsing> requestedAnimals = new Map<Decimal,AnimalParsing>();
       for (Decimal id : ids) {
-        requestedAnimals.put(id, sendRequest(id));
+        requestedAnimals.put(id,  AnimalParsing.parse(ReadyToUseRequests.sendGet(Url + id).getBody()));
       }
       return requestedAnimals;
     }
-
-    public static AnimalParsing sendRequest(Decimal id) {
-        Http http = new Http();
-        HttpRequest request = new HttpRequest();
-        request.setEndpoint(URL + '/' + String.valueOf(Integer.valueOf(id)));
-        request.setMethod('GET');
-        HttpResponse response = http.send(request);
-        if(response.getStatusCode() == 200) {
-          AnimalParsing parsedResponse = AnimalParsing.parse(response.getBody());
-          return parsedResponse;
-        }
-        return null;
-    }
-
-
 }

@@ -1,5 +1,5 @@
 public class QueueableAnimalHandlerClass implements Queueable, Database.AllowsCallouts {
-    private static final String URL = 'https://th-apex-http-callout.herokuapp.com/animals';
+    private static final String URL = 'https://th-apex-http-callout.herokuapp.com/animals/';
     List<Animal__c> animals = new List<Animal__c>();
     List<Animal__c> cuttedList = new List<Animal__c>();
 
@@ -36,7 +36,7 @@ public class QueueableAnimalHandlerClass implements Queueable, Database.AllowsCa
             updatedAnimal.add(animal);
         }
         update updatedAnimal;
-        if (this.cuttedList.size() != 0 && !Test.isRunningTest()) {
+        if (!this.cuttedList.isEmpty() && !Test.isRunningTest()) {
             System.enqueueJob(new QueueableAnimalHandlerClass(cuttedList));
         }
     }
@@ -45,7 +45,7 @@ public class QueueableAnimalHandlerClass implements Queueable, Database.AllowsCa
          Map<Decimal,AnimalParsing> requestedAnimals = new Map<Decimal,AnimalParsing>();
          for (Animal__c animal : animals) {
              if (!requestedAnimals.containsKey(animal.Id__c)) {
-                requestedAnimals.put(animal.Id__c, AnimalHandlerClass.sendRequest(animal.Id__c));
+                requestedAnimals.put(animal.Id__c, AnimalParsing.parse(ReadyToUseRequests.sendGet(Url + Integer.valueOf(animal.Id__c)).getBody()));
              }
          }
          return requestedAnimals;

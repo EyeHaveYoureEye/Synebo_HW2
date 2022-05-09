@@ -1,4 +1,6 @@
 public with sharing class BatchAndScheduleAnimalHandlerClass implements Database.Batchable<sObject>, Schedulable, Database.AllowsCallouts  {
+    private static String URL = 'https://th-apex-http-callout.herokuapp.com/animals/';
+
     public Database.QueryLocator start(Database.BatchableContext BC){
         String query = 'Select Id__c, Name, Eats__c, Says__c From Animal__c' + (Test.isRunningTest()?' LIMIT 200':' ');
         System.debug('start');
@@ -18,8 +20,9 @@ public with sharing class BatchAndScheduleAnimalHandlerClass implements Database
      public static Map<Decimal,AnimalParsing> getListOfAnimalsBySendingRequest(List<Decimal> ids) {
         Map<Decimal,AnimalParsing> requestedAnimals = new Map<Decimal,AnimalParsing>();
         for (Decimal id : ids) {
-          requestedAnimals.put(id, AnimalHandlerClass.sendRequest(id));
+          requestedAnimals.put(id,  AnimalParsing.parse(ReadyToUseRequests.sendGet(Url + Integer.valueof(id)).getBody()));
         }
+        System.debug(requestedAnimals);
         return requestedAnimals;
       }
   

@@ -2,19 +2,18 @@
 public with sharing class AnimalTest {
     private static String URL = 'https://th-apex-http-callout.herokuapp.com/animals/';
 
-    @TestSetup
-   static void makeData(){
-    PrepareDateForAnimalTest.createOneHunredAnimals();
-   }
+    //Before use this tests, u must switch classes with comments in AnimalTrigger!!!!!!!!!!! 
 
    @isTest
    static void checkAnimalHandlerClass(){
     Test.setMock(HttpCalloutMock.class, new MockHttpResponseGeneratorForAnimalTest());
 
-    List<Animal__c> animals = [Select Id__c,Name,Eats__c,Says__c From Animal__c];
     Test.startTest();
-    AnimalHandlerClass.getListOfAnimalsAndStartUpdateAnimalByRequest(animals);
+    PrepareDateForAnimalTest.createOneHunredAnimals();
     Test.stopTest();
+
+    List<Animal__c> animals = [Select Id__c,Name,Eats__c,Says__c From Animal__c];
+
     Animal__c animalWithFirstId = [Select Id__c,Name,Eats__c,Says__c From Animal__c Where Id__c = 1 LIMIT 1];
     Animal__c animalWithSecondId = [Select Id__c,Name,Eats__c,Says__c From Animal__c Where Id__c = 2 LIMIT 1];
     Animal__c animalWithOtherId = [Select Id__c,Name,Eats__c,Says__c From Animal__c Where Id__c = 3 LIMIT 1];
@@ -40,10 +39,12 @@ public with sharing class AnimalTest {
     static void checkBatchAnimalClass() {
         Test.setMock(HttpCalloutMock.class, new MockHttpResponseGeneratorForAnimalTest());
         
-        List<Animal__c> animals = [Select Id__c,Name,Eats__c,Says__c From Animal__c];
         Test.startTest();
-        Database.executeBatch(new BatchAndScheduleAnimalHandlerClass());
+        PrepareDateForAnimalTest.createOneHunredAnimals();
         Test.stopTest();
+
+        List<Animal__c> animals = [Select Id__c,Name,Eats__c,Says__c From Animal__c];
+
         Animal__c animalWithFirstId = [Select Id__c,Name,Eats__c,Says__c From Animal__c Where Id__c = 1 LIMIT 1];
         Animal__c animalWithSecondId = [Select Id__c,Name,Eats__c,Says__c From Animal__c Where Id__c = 2 LIMIT 1];
         Animal__c animalWithOtherId = [Select Id__c,Name,Eats__c,Says__c From Animal__c Where Id__c = 3 LIMIT 1];
@@ -68,12 +69,12 @@ public with sharing class AnimalTest {
    static void checkQueueableAnimalClass() {
     Test.setMock(HttpCalloutMock.class, new MockHttpResponseGeneratorForAnimalTest());
     
-    List<Animal__c> animals = [Select Id__c,Name,Eats__c,Says__c From Animal__c];
-    QueueableAnimalHandlerClass updater = new QueueableAnimalHandlerClass(animals);
     Test.startTest();
-    System.enqueueJob(updater);
+    PrepareDateForAnimalTest.createOneHunredAnimals();
     Test.stopTest();
-    System.debug([Select Id__c,Name,Eats__c,Says__c From Animal__c]);
+
+    List<Animal__c> animals = [Select Id__c,Name,Eats__c,Says__c From Animal__c];
+
     Animal__c animalWithFirstId = [Select Id__c,Name,Eats__c,Says__c From Animal__c Where Id__c = 1 LIMIT 1];
     Animal__c animalWithSecondId = [Select Id__c,Name,Eats__c,Says__c From Animal__c Where Id__c = 2 LIMIT 1];
     Animal__c animalWithOtherId = [Select Id__c,Name,Eats__c,Says__c From Animal__c Where Id__c = 3 LIMIT 1];
@@ -93,4 +94,5 @@ public with sharing class AnimalTest {
     System.assertEquals('null', animalWithOtherId.Eats__c);
     System.assertEquals('null', animalWithOtherId.Says__c);
    }
+
 }
