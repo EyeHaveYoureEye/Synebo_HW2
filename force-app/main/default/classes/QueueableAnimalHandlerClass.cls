@@ -27,21 +27,19 @@ public class QueueableAnimalHandlerClass implements Queueable, Database.AllowsCa
 
     public void execute(QueueableContext context) {
         controllerOfSizeList();
-        List<Animal__c> updatedAnimal = new List<Animal__c>();
-        Map<Decimal,AnimalParsing> requestedAnimals = getListOfAnimalsBySendingRequest(this.animals);
+        Map<Decimal,AnimalParsing> requestedAnimals = getMapOfUnrepetitiveAnimalsBySendingRequest(this.animals);
         for (Animal__c animal : this.animals) {
             animal.Name = requestedAnimals.get(animal.Id__c).Animal.Name;
             animal.Eats__c = requestedAnimals.get(animal.Id__c).Animal.eats;
             animal.Says__c = requestedAnimals.get(animal.Id__c).Animal.says;
-            updatedAnimal.add(animal);
         }
-        update updatedAnimal;
+        update this.animals;
         if (!this.cuttedList.isEmpty() && !Test.isRunningTest()) {
             System.enqueueJob(new QueueableAnimalHandlerClass(cuttedList));
         }
     }
    
-       private Map<Decimal,AnimalParsing> getListOfAnimalsBySendingRequest(List<Animal__c> animals) {
+       private Map<Decimal,AnimalParsing> getMapOfUnrepetitiveAnimalsBySendingRequest(List<Animal__c> animals) {
          Map<Decimal,AnimalParsing> requestedAnimals = new Map<Decimal,AnimalParsing>();
          for (Animal__c animal : animals) {
              if (!requestedAnimals.containsKey(animal.Id__c)) {

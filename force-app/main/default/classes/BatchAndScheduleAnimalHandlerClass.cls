@@ -7,27 +7,26 @@ public with sharing class BatchAndScheduleAnimalHandlerClass implements Database
         return Database.getQueryLocator(query);
      }
 
-     public List<Decimal> getFilteredId (List<Animal__c> animals){
-        List<Decimal> listIdForRequest = new List<Decimal>();
+     public Set<Decimal> getFilteredId (List<Animal__c> animals){
+      Set<Decimal> setUnrepetitiveIdForRequest = new Set<Decimal>();
         for (Animal__c animal : animals) {
-          if (!listIdForRequest.contains(animal.Id__c)) {
-            listIdForRequest.add(animal.Id__c);
-          }
+          setUnrepetitiveIdForRequest.add(animal.Id__c);          
         }
-        return listIdForRequest;
+        return setUnrepetitiveIdForRequest;
      }
 
-     public static Map<Decimal,AnimalParsing> getListOfAnimalsBySendingRequest(List<Decimal> ids) {
-        Map<Decimal,AnimalParsing> requestedAnimals = new Map<Decimal,AnimalParsing>();
-        for (Decimal id : ids) {
-          requestedAnimals.put(id,  AnimalParsing.parse(ReadyToUseRequests.sendGet(Url + Integer.valueof(id)).getBody()));
-        }
-        System.debug(requestedAnimals);
-        return requestedAnimals;
+     private Map<Decimal,AnimalParsing> getMapOfUnrepetitiveAnimalsBySendingRequest(List<Animal__c> animals) {
+      Map<Decimal,AnimalParsing> requestedAnimals = new Map<Decimal,AnimalParsing>();
+      for (Animal__c animal : animals) {
+          if (!requestedAnimals.containsKey(animal.Id__c)) {
+             requestedAnimals.put(animal.Id__c, AnimalParsing.parse(ReadyToUseRequests.sendGet(Url + Integer.valueOf(animal.Id__c)).getBody()));
+          }
       }
+      return requestedAnimals;
+    }
   
      public void execute(Database.BatchableContext BC,  List<Animal__c> scope){
-        Map<Decimal,AnimalParsing> requestedAnimals = getListOfAnimalsBySendingRequest(getFilteredId(scope));
+        Map<Decimal,AnimalParsing> requestedAnimals = getMapOfUnrepetitiveAnimalsBySendingRequest(scope);
         for(Animal__c s : scope){
             s.Name = requestedAnimals.get(s.Id__c).Animal.Name;
             s.Eats__c = requestedAnimals.get(s.Id__c).Animal.eats;
