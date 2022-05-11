@@ -1,10 +1,10 @@
 public with sharing class AnimalWrapper {
 
-    public AnimalWrapper(Decimal id,String name,String eats,String says) {
-        this.id = id;
-        this.name = name;
-        this.eats = eats;
-        this.says = says;
+    public AnimalWrapper(Animal__c animal) {
+        this.id = animal.Id__c;
+        this.name = animal.Name;
+        this.eats = animal.Eats__c;
+        this.says = animal.Says__c;
     }
         public Decimal id;
 		public String name;
