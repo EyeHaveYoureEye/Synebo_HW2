@@ -1,9 +1,42 @@
 <template>
-    <div style="height: 300px;">
-        <lightning-datatable
-                key-field="id"
-                data={data}
-                columns={columns}>
+    <lightning-card title="See and create Animals" icon-name="custom:custom14">
+        <div class="slds-clearfix">
+            <div class="slds-float_right">
+                <lightning-button label="Create new by N.M." class="slds-m-left_x-small" onclick={openNewByNM}></lightning-button>
+                <lightning-button label="Create new" class="slds-m-left_x-small" onclick={openModal}></lightning-button>
+            </div>
+        </div>
+        <template if:true={isModalOpen}>
+            <!-- Modal/Popup Box LWC starts here -->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box LWC header here -->
+                    <header class="slds-modal__header">
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Create Animal</h2>
+                    </header>
+                    <template if:true={isModalOpenOnId}>
+                        <div class="slds-modal__content slds-p-around_medium" data-id="modal-content-id-1">
+                            <lightning-input type="Decimal" label="External id" data-id="external-id-1" onchange={handleIdFieldChange} required></lightning-input>
+                        </div>
+                    </template>
+                    <template if:true={isModalOpenOnCreateAnimal}>
+                        <div class="slds-modal__content slds-p-around_medium" data-id="modal-content-id-2">
+                            <lightning-input type="Decimal" label="External id"  data-id="external-id-2" onchange={handleAnimalFieldsChange} required></lightning-input>
+                            <lightning-input type="Decimal" label="Name"  data-id="name-1" onchange={handleAnimalFieldsChange} required></lightning-input>
+                            <lightning-input type="Decimal" label="Eats"  data-id="eats-1" onchange={handleAnimalFieldsChange} required></lightning-input>
+                            <lightning-input type="Decimal" label="Says"  data-id="says-1" onchange={handleAnimalFieldsChange} required></lightning-input>
+                        </div>
+                    </template>
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={closeModal} title="Cancel">Cancel</button>
+                        <button class="slds-button slds-button_brand" onclick={submitDetails} title="OK">Check and create</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+        <lightning-datatable key-field="id" data={data} columns={columns}>
         </lightning-datatable>
-    </div>    
+    </lightning-card>
 </template>

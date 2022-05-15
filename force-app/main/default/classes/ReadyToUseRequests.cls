@@ -5,6 +5,7 @@ public with sharing class ReadyToUseRequests {
         HttpRequest request = new HttpRequest();
         request.setEndpoint(URL);
         request.setMethod('GET');
+        request.setHeader('Content-Type', 'application/json');
         try {
         HttpResponse response = http.send(request);
         if(response.getStatusCode() == 200) {
